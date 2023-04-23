@@ -25,6 +25,24 @@ elseif (APPLE)
 		"-framework CoreServices" "-framework CoreFoundation" "-framework AudioUnit"
 		"-framework AudioToolbox" "-framework CoreAudio" "-framework CoreMedia"
 		"-framework VideoToolbox" "-framework CoreVideo" "-framework Security")
+elseif (ANDROID AND NOT USE_STATIC_ANDROID_FFMPEG)
+	target_link_libraries(${FFMPEG_CORE_NAME} INTERFACE
+		"${CMAKE_CURRENT_SOURCE_DIR}/shared/android/${ANDROID_ABI}/libavformat.so"
+		"${CMAKE_CURRENT_SOURCE_DIR}/shared/android/${ANDROID_ABI}/libavcodec.so"
+		"${CMAKE_CURRENT_SOURCE_DIR}/shared/android/${ANDROID_ABI}/libavdevice.so"
+		"${CMAKE_CURRENT_SOURCE_DIR}/shared/android/${ANDROID_ABI}/libswscale.so"
+		"${CMAKE_CURRENT_SOURCE_DIR}/shared/android/${ANDROID_ABI}/libavutil.so"
+		"${CMAKE_CURRENT_SOURCE_DIR}/shared/android/${ANDROID_ABI}/libavfilter.so"
+		"${CMAKE_CURRENT_SOURCE_DIR}/shared/android/${ANDROID_ABI}/libswresample.so")
+elseif (ANDROID AND USE_STATIC_ANDROID_FFMPEG)
+	target_link_libraries(${FFMPEG_CORE_NAME} INTERFACE
+		"${CMAKE_CURRENT_SOURCE_DIR}/lib/android/${ANDROID_ABI}/libavformat.a"
+		"${CMAKE_CURRENT_SOURCE_DIR}/lib/android/${ANDROID_ABI}/libavcodec.a"
+		"${CMAKE_CURRENT_SOURCE_DIR}/lib/android/${ANDROID_ABI}/libavdevice.a"
+		"${CMAKE_CURRENT_SOURCE_DIR}/lib/android/${ANDROID_ABI}/libswscale.a"
+		"${CMAKE_CURRENT_SOURCE_DIR}/lib/android/${ANDROID_ABI}/libavutil.a"
+		"${CMAKE_CURRENT_SOURCE_DIR}/lib/android/${ANDROID_ABI}/libavfilter.a"
+		"${CMAKE_CURRENT_SOURCE_DIR}/lib/android/${ANDROID_ABI}/libswresample.a")
 elseif (UNIX)
 	target_link_libraries(${FFMPEG_CORE_NAME} INTERFACE
 		"${CMAKE_CURRENT_SOURCE_DIR}/lib/linux/x86_64/libavformat.a"

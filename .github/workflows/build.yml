@@ -10,8 +10,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # os: [ubuntu-latest, windows-latest, macos-latest]
-        build: [ubuntu-x64, windows-x64, macos-x64, macos-arm64]
+        build: [ubuntu-x64, windows-x64, macos-x64, macos-arm64, android-arm64-static, android-arm64-dynamic]
         config: [Release]
         include:
           - build: ubuntu-x64
@@ -38,6 +37,19 @@ jobs:
             upload-path: /Users/runner/.cache/vcpkg/archives
             vcpkg-root: /usr/local/share/vcpkg
             extra-args: ""
+          - build: android-arm64-static
+            os: ubuntu-latest
+            triplet: arm64-android-static-release
+            upload-path: /home/runner/.cache/vcpkg/archives
+            vcpkg-root: /usr/local/share/vcpkg
+            extra-args: ""
+          - build: android-arm64-dynamic
+            os: ubuntu-latest
+            triplet: arm64-android-dynamic-release
+            upload-path: /home/runner/.cache/vcpkg/archives
+            vcpkg-root: /usr/local/share/vcpkg
+            extra-args: ""
+
 
     steps:
       - uses: actions/checkout@v3
