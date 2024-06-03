@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        build: [linux, windows, macos, android]
+        build: [linux, windows, android]
         arch: [x64, arm64]
         include:
           - build: linux
@@ -23,17 +23,6 @@ jobs:
             os: windows-latest
             triplet: win-llvm-static-release
             vcpkg-root: C:\vcpkg
-            extra-args: --overlay-triplets=./triplets
-          - build: macos
-            os: macos-latest
-            triplet: osx-release
-            vcpkg-root: /usr/local/share/vcpkg
-            extra-args: ""
-          - build: macos
-            os: macos-latest
-            arch: universal
-            triplet: osx-release
-            vcpkg-root: /usr/local/share/vcpkg
             extra-args: --overlay-triplets=./triplets
           - build: android
             os: ubuntu-latest
@@ -60,7 +49,7 @@ jobs:
       - name: Set up build environment (arm64 ubuntu-latest)
         run: |
           sudo apt-get install -qy binutils-aarch64-linux-gnu gcc-aarch64-linux-gnu g++-aarch64-linux-gnu
-        if: matrix.os == 'ubuntu-latest' && matrix.arch == 'arm64'
+        if: matrix.build == 'linux' && matrix.arch == 'arm64'
 
       - name: Patch vcpkg
         run: |
@@ -82,7 +71,7 @@ jobs:
   create-release:
     needs: [build]
     runs-on: "ubuntu-20.04"
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/android'
     permissions:
       contents: write
       
@@ -109,6 +98,6 @@ jobs:
           ls -al artifacts/
           wget -c https://github.com/tcnksm/ghr/releases/download/v0.14.0/ghr_v0.14.0_linux_amd64.tar.gz
           tar xfv ghr_v0.14.0_linux_amd64.tar.gz
-          ghr_v0.14.0_linux_amd64/ghr -u Vita3K -r ffmpeg-core -n 'Automatic FFmpeg CI builds (${{ env.COMMIT_SHORT_SHA }})' -b "$(printf "Corresponding commit: ${{ github.sha }}")" ${{ env.COMMIT_SHORT_SHA }} artifacts/
+          ghr_v0.14.0_linux_amd64/ghr -u Macdu -r ffmpeg-core -n 'Automatic FFmpeg CI builds (${{ env.COMMIT_SHORT_SHA }})' -b "$(printf "Corresponding commit: ${{ github.sha }}")" ${{ env.COMMIT_SHORT_SHA }} artifacts/
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
